@@ -13,6 +13,7 @@ package com.ds.avare;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -20,7 +21,12 @@ import android.widget.TextView;
 import com.ds.avare.checklist.ChecklistAdapter;
 import com.ds.avare.checklist.ChecklistItem;
 import com.ds.avare.checklist.ChecklistItemLayout;
+import com.ds.avare.storage.Preferences;
 import com.ds.avare.utils.Helper;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -29,6 +35,9 @@ import java.util.ArrayList;
  * An activity that deals with checklists: loading, creating, deleting and using.
  */
 public class ChecklistActivity extends Activity implements View.OnClickListener {
+    private final String CHECKLIST_FILE = "checklists.dat";
+
+    private Preferences prefs;
 
     private TextView listNameView;
     private TextView listSelectButton;
@@ -36,7 +45,9 @@ public class ChecklistActivity extends Activity implements View.OnClickListener 
 
     private ChecklistAdapter checklistAdapter;
 
-    private ChecklistItem selectedChecklist;
+    // Initialized as -1 to indicate that no checklist is selected.
+    private int selectedChecklist = -1;
+    private ArrayList<ChecklistItem> checklists;
 
     /*
      * (non-Javadoc)
@@ -47,6 +58,8 @@ public class ChecklistActivity extends Activity implements View.OnClickListener 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.checklist);
+
+        prefs = new Preferences(this);
 
         listNameView = (TextView) findViewById(R.id.listName);
         listSelectButton = (TextView) findViewById(R.id.listSelectButton);
@@ -63,16 +76,7 @@ public class ChecklistActivity extends Activity implements View.OnClickListener 
         super.onResume();
         Helper.setOrientationAndOn(this);
 
-        // Load missing data into the selected checklist item.
-        if(selectedChecklist == null || selectedChecklist.id < 0
-                || selectedChecklist.name == null || selectedChecklist.name.isEmpty()) {
-            // TODO: Prompt for checklist selection/creation.
-        }
-        else if(selectedChecklist.listItems == null || selectedChecklist.listItems.isEmpty()) {
-            selectedChecklist = loadChecklist(selectedChecklist.id);
-        }
-        // TODO: Complete logic.
-
+        loadChecklists();
         initChecklistView();
     }
 
@@ -93,43 +97,77 @@ public class ChecklistActivity extends Activity implements View.OnClickListener 
      */
     @Override
     public void onClick(View v) {
-        // TODO: This is going to be a bug.  Need to figure out a way to make sure that only the currently active objects are being triggered.
-        ChecklistItemLayout itemView = (ChecklistItemLayout) checklistView.getSelectedView();
-        int itemPosition = checklistView.getSelectedItemPosition();
+        ChecklistItemLayout selectedView = (ChecklistItemLayout) checklistView.getSelectedView();
 
-        checklistAdapter.itemCheckClicked(itemPosition, itemView);
+        // Ensure that the view being checked is the currently active item.
+        if(v == selectedView) {
+            int itemPosition = checklistView.getSelectedItemPosition();
+            checklistAdapter.itemCheckClicked(itemPosition, selectedView);
+            checklistView.smoothScrollToPosition(itemPosition + 1);
+        }
 
-        checklistView.smoothScrollToPosition(itemPosition +1);
+        // TODO: Select list item that was clicked.
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
+        saveChecklists();
         // TODO: Save activity state.
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-
         // TODO: Restore activity state.
     }
 
-    private ArrayList<ChecklistItem> getChecklists() {
-        // TODO: Implement.
-        return null;
+    private void loadChecklists() {
+        checklists = new ArrayList<>();
+        String jsonString = prefs.getLists();
+        JSONArray json = null;
+
+        try {
+            json = new JSONArray(jsonString);
+        } catch (JSONException e) {
+            Log.e("ChecklistActivity", "loadChecklists: Parsing JSON string from preferences.", e);
+        }
+
+        if(json == null || json.length() <= 0) { return; }
+
+        for(int i = 0; i < json.length(); i++) {
+            try {
+                JSONObject obj = json.getJSONObject(i);
+                checklists.add(new ChecklistItem(obj));
+            } catch (JSONException e) {
+                Log.e("ChecklistActivity", "loadChecklists: Loading JSON object.", e);
+            }
+        }
     }
 
-    private ChecklistItem loadChecklist(int id) {
-        // TODO: Implement.
-        return null;
+    private void saveChecklists() {
+        JSONArray json = new JSONArray();
+
+        for(ChecklistItem item : checklists) {
+            json.put(item.getJson());
+        }
+
+        prefs.putLists(json.toString());
     }
 
     private void initChecklistView() {
-        checklistAdapter = new ChecklistAdapter(this, this);
+        ChecklistItem item = null;
+        if(selectedChecklist >= 0) {
+            try {
+                item = checklists.get(selectedChecklist);
+            } catch (IndexOutOfBoundsException e) {
+                item = null;
+            }
+        }
+
+        checklistAdapter = new ChecklistAdapter(this, this, item);
 
         checklistView.setOnItemSelectedListener(checklistAdapter);
-        // TODO: Implement.
+        checklistView.setAdapter(checklistAdapter);
     }
 }

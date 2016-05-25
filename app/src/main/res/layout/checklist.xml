@@ -53,9 +53,23 @@ Redistribution and use in source and binary forms, with or without modification,
 		android:layout_marginRight="3dp"
 		android:background="#FFF"/>
 
-	<ListView
-		android:id="@+id/checklistView"
+	<RelativeLayout
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"/>
+		android:layout_height="match_parent">
+
+		<ListView
+			android:id="@+id/checklistView"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"/>
+
+		<TextView
+			android:id="@+id/errorText"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_centerInParent="true"
+			android:text="No Checklist Loaded!"
+			android:textColor="#FFF"/>
+
+	</RelativeLayout>
     
 </LinearLayout>

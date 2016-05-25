@@ -1,6 +1,7 @@
 package com.ds.avare.checklist;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -30,7 +31,7 @@ public class ChecklistAdapter extends BaseAdapter implements AdapterView.OnItemS
         items = new ArrayList<>();
     }
 
-    public ChecklistAdapter(Context context, View.OnClickListener clickListener, ChecklistItem checklist) {
+    public ChecklistAdapter(Context context, View.OnClickListener clickListener, @Nullable ChecklistItem checklist) {
         this.context = context;
         this.clickListener = clickListener;
         items = new ArrayList<>();
@@ -49,6 +50,7 @@ public class ChecklistAdapter extends BaseAdapter implements AdapterView.OnItemS
      */
     public void addItem(String name, boolean checked) {
         items.add(new LineItem(name, checked));
+        notifyDataSetChanged();
     }
 
     @Override

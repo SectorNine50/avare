@@ -23,7 +23,6 @@ import android.os.IBinder;
 import com.ds.avare.adsb.TrafficCache;
 import com.ds.avare.cap.DrawCapLines;
 import com.ds.avare.externalFlightPlan.ExternalPlanMgr;
-import com.ds.avare.flight.Checklist;
 import com.ds.avare.flight.FlightStatus;
 import com.ds.avare.flightLog.KMLRecorder;
 import com.ds.avare.gps.Gps;
@@ -123,8 +122,6 @@ public class StorageService extends Service {
     private Location mLocation;
     
     private boolean mDownloading;
-    
-    private LinkedList<Checklist> mCheckLists;
 
     private MetarLayer mMetarLayer;
     
@@ -241,11 +238,6 @@ public class StorageService extends Service {
      * Watches GPS to notify of phases of flight
      */
     private FlightStatus mFlightStatus;
-   
-    /*
-     * Current checklist
-     */
-    private Checklist mChecklist;
     
     // The edge distance tape instrument
     private EdgeDistanceTape mEdgeDistanceTape;
@@ -323,7 +315,6 @@ public class StorageService extends Service {
         mLastPlateAirport = null;
         mLastPlateIndex = 0;
         mElevTile = new ElevationTile(getApplicationContext());
-        mCheckLists = null;
         
         mCap = new DrawCapLines(this, getApplicationContext(), getResources().getDimension(R.dimen.distanceRingNumberTextSize));
         
@@ -335,8 +326,6 @@ public class StorageService extends Service {
         mPixelDraw = new PixelDraw();
         
         mElev = -1;
-
-        mChecklist = new Checklist("");
         
         /*
          * Allocate a flight timer object
@@ -1090,22 +1079,6 @@ public class StorageService extends Service {
      * 
      * @return
      */
-    public LinkedList<Checklist> getCheckLists() {
-        return mCheckLists;
-    }
-    
-    /**
-     * 
-     * @param list
-     */
-    public void setCheckLists(LinkedList<Checklist> list) {
-        mCheckLists = list;
-    }
-    
-    /**
-     * 
-     * @return
-     */
     public double getElevation() {
        return mElev; 
     }
@@ -1136,14 +1109,6 @@ public class StorageService extends Service {
     
     public NavComments getNavComments() {
     	return mNavComments;
-    }
-    
-    public Checklist getChecklist() {
-    	return mChecklist;
-    }
-    
-    public void setChecklist(Checklist cl) {
-    	mChecklist = cl;
     }
 
     public EdgeDistanceTape getEdgeTape() {
