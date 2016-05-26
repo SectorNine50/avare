@@ -17,30 +17,21 @@ import java.util.ArrayList;
  * @author Justin Wiley
  * This is a list adapter for displaying checklist items.
  */
-public class ChecklistAdapter extends BaseAdapter implements AdapterView.OnItemSelectedListener {
+public class ChecklistAdapter extends BaseAdapter implements AdapterView.OnItemSelectedListener, AdapterView.OnItemClickListener {
     private Context context;
-    private View.OnClickListener clickListener;
     private ArrayList<LineItem> items;
 
     // Used to visually shrink an item on deselection.
     private ChecklistItemLayout currentlySelectedView;
 
-    public ChecklistAdapter(Context context, View.OnClickListener clickListener) {
+    public ChecklistAdapter(Context context) {
         this.context = context;
-        this.clickListener = clickListener;
         items = new ArrayList<>();
     }
 
-    public ChecklistAdapter(Context context, View.OnClickListener clickListener, @Nullable ChecklistItem checklist) {
+    public ChecklistAdapter(Context context, @Nullable ChecklistItem checklist) {
         this.context = context;
-        this.clickListener = clickListener;
-        items = new ArrayList<>();
-
-        if(checklist == null || checklist.listItems == null) { return; }
-
-        for(String name : checklist.listItems) {
-            items.add(new LineItem(name, false));
-        }
+        newList(checklist);
     }
 
     /**
@@ -50,6 +41,23 @@ public class ChecklistAdapter extends BaseAdapter implements AdapterView.OnItemS
      */
     public void addItem(String name, boolean checked) {
         items.add(new LineItem(name, checked));
+        notifyDataSetChanged();
+    }
+
+    /**
+     * Sets a new checklist to display.
+     * @param checklist The checklist to display.
+     */
+    public void newList(ChecklistItem checklist) {
+        if(items == null) { items = new ArrayList<>(); }
+        else { items.clear(); }
+
+        if(checklist == null || checklist.listItems == null) { return; }
+
+        for(String name : checklist.listItems) {
+            items.add(new LineItem(name, false));
+        }
+
         notifyDataSetChanged();
     }
 
@@ -87,7 +95,6 @@ public class ChecklistAdapter extends BaseAdapter implements AdapterView.OnItemS
         itemName.setText(item.name);
 
         ImageView itemCheck = (ImageView) convertView.findViewById(R.id.itemCheck);
-        itemCheck.setOnClickListener(clickListener);
         // Default image in the layout is unchecked.
         if(item.checked) { itemCheck.setImageResource(R.drawable.checkbox_marked_circle_outline); }
 
@@ -126,7 +133,7 @@ public class ChecklistAdapter extends BaseAdapter implements AdapterView.OnItemS
     public boolean itemCheckClicked(int position, ChecklistItemLayout view) {
         LineItem item = items.get(position);
 
-        if(item.checked) {
+        if (item.checked) {
             item.checked = false;
             view.itemUnchecked();
         } else {
@@ -135,6 +142,11 @@ public class ChecklistAdapter extends BaseAdapter implements AdapterView.OnItemS
         }
 
         return item.checked;
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        // TODO: Implement
     }
 
     /**

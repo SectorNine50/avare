@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -14,7 +17,7 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:text="Select Checklist"
-            android:textColor="#000"
+            android:textColor="#FFF"
             android:textSize="20sp"/>
 
         <!-- Placeholder image! -->
@@ -22,10 +25,11 @@
             android:id="@+id/newChecklistButton"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:padding="10dp"
+            android:layout_margin="5dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/checkbox_blank_circle_outline"/>
+            android:tint="#FFF"
+            android:src="@drawable/plus"/>
 
     </RelativeLayout>
 
@@ -35,11 +39,28 @@
         android:layout_height="1dp"
         android:layout_marginLeft="3dp"
         android:layout_marginRight="3dp"
-        android:background="#424242"/>
+        android:background="#FFF"/>
 
-    <ListView
-        android:id="@+id/checklistList"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:minHeight="100dp">
+
+        <ListView
+            android:id="@+id/checklistList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/dialogErrorText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:layout_centerInParent="true"
+            android:text="No checklists available!"
+            android:textColor="#FFF"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
 
 </LinearLayout>

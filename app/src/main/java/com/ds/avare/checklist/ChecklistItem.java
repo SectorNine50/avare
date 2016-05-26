@@ -25,6 +25,7 @@ public class ChecklistItem {
         this.name = name;
     }
 
+    @SuppressWarnings("unchecked")
     public ChecklistItem(JSONObject obj) throws JSONException {
         id = obj.getInt(JSON_ID);
         name = obj.getString(JSON_NAME);

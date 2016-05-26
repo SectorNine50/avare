@@ -17,22 +17,11 @@
         android:textSize="20dp"
         android:text="Item"/>
 
-    <!-- Trick to create a nice little line across the screen. -->
-    <FrameLayout
-        android:id="@+id/vertLine"
-        android:layout_toLeftOf="@+id/itemCheck"
-        android:layout_centerVertical="true"
-        android:layout_width="1dp"
-        android:layout_height="40dp"
-        android:layout_marginLeft="3dp"
-        android:layout_marginRight="3dp"
-        android:background="#FFF"/>
-
     <ImageView
         android:id="@+id/itemCheck"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_margin="15dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:padding="10dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:tint="#FFF"

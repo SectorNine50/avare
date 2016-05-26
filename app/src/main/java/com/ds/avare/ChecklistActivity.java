@@ -11,16 +11,18 @@ Redistribution and use in source and binary forms, with or without modification,
 */
 package com.ds.avare;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ds.avare.checklist.ChecklistAdapter;
+import com.ds.avare.checklist.ChecklistDialog;
 import com.ds.avare.checklist.ChecklistItem;
-import com.ds.avare.checklist.ChecklistItemLayout;
 import com.ds.avare.storage.Preferences;
 import com.ds.avare.utils.Helper;
 
@@ -34,14 +36,15 @@ import java.util.ArrayList;
  * @author Justin Wiley
  * An activity that deals with checklists: loading, creating, deleting and using.
  */
-public class ChecklistActivity extends Activity implements View.OnClickListener {
+public class ChecklistActivity extends AppCompatActivity {
     private final String CHECKLIST_FILE = "checklists.dat";
 
     private Preferences prefs;
 
     private TextView listNameView;
-    private TextView listSelectButton;
+    private ImageView listSelectButton;
     private ListView checklistView;
+    private TextView errorText;
 
     private ChecklistAdapter checklistAdapter;
 
@@ -62,8 +65,18 @@ public class ChecklistActivity extends Activity implements View.OnClickListener 
         prefs = new Preferences(this);
 
         listNameView = (TextView) findViewById(R.id.listName);
-        listSelectButton = (TextView) findViewById(R.id.listSelectButton);
+        listSelectButton = (ImageView) findViewById(R.id.listSelectButton);
         checklistView = (ListView) findViewById(R.id.checklistView);
+        errorText = (TextView) findViewById(R.id.errorText);
+
+        listSelectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ChecklistDialog dialog = new ChecklistDialog();
+                dialog.initChecklistDialog(checklists);
+                dialog.show(getSupportFragmentManager(), "ChecklistDialog");
+            }
+        });
     }
 
     /*
@@ -90,23 +103,9 @@ public class ChecklistActivity extends Activity implements View.OnClickListener 
         ((MainActivity) this.getParent()).showMapTab();
     }
 
-    /**
-     * This method is being utilized to register when a checklist item has been checked, and to
-     * progress the checklist to the next item.
-     * @param v Clicked view (unused).
-     */
-    @Override
-    public void onClick(View v) {
-        ChecklistItemLayout selectedView = (ChecklistItemLayout) checklistView.getSelectedView();
-
-        // Ensure that the view being checked is the currently active item.
-        if(v == selectedView) {
-            int itemPosition = checklistView.getSelectedItemPosition();
-            checklistAdapter.itemCheckClicked(itemPosition, selectedView);
-            checklistView.smoothScrollToPosition(itemPosition + 1);
-        }
-
-        // TODO: Select list item that was clicked.
+    public void selectChecklist(int id) {
+        selectedChecklist = id;
+        initChecklistView();
     }
 
     @Override
@@ -163,11 +162,36 @@ public class ChecklistActivity extends Activity implements View.OnClickListener 
             } catch (IndexOutOfBoundsException e) {
                 item = null;
             }
+
+            hideError();
+        } else {
+            showError("No checklist loaded!");
         }
 
-        checklistAdapter = new ChecklistAdapter(this, this, item);
+        if(checklistAdapter == null) {
+            checklistAdapter = new ChecklistAdapter(this, item);
+        } else {
+            checklistAdapter.newList(item);
+        }
 
         checklistView.setOnItemSelectedListener(checklistAdapter);
+        checklistView.setOnItemClickListener(checklistAdapter);
         checklistView.setAdapter(checklistAdapter);
+    }
+
+    private void showError(@Nullable String message) {
+        if(message == null || message.isEmpty()) {
+            errorText.setText("An error occurred.");
+        } else {
+            errorText.setText(message);
+        }
+
+        errorText.setVisibility(View.VISIBLE);
+        checklistView.setVisibility(View.GONE);
+    }
+
+    private void hideError() {
+        errorText.setVisibility(View.GONE);
+        checklistView.setVisibility(View.VISIBLE);
     }
 }
