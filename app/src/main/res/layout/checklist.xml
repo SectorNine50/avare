@@ -17,6 +17,9 @@ Redistribution and use in source and binary forms, with or without modification,
 	android:orientation="vertical"
 	android:background="#000">
 
+	<!-- Decided to go with a custom toolbar because custom views on ActionBars/Toolbars looked like
+	they were more complicated than they needed to be for our purposes.  Particularly since we used so
+	little functionality in the ActionBar/Toolbar.  Little more control this way as well. -->
 	<RelativeLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content">
@@ -32,15 +35,58 @@ Redistribution and use in source and binary forms, with or without modification,
 			android:textColor="#FF0000"
 			android:text="Checklists"/>
 
-		<ImageView
-			android:id="@+id/listSelectButton"
-			android:layout_width="50dp"
-			android:layout_height="50dp"
-			android:padding="10dp"
-			android:layout_alignParentRight="true"
+		<LinearLayout
+			android:id="@+id/normalButtonsLayout"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
 			android:layout_centerVertical="true"
-			android:src="@drawable/format_list_bulleted"
-			android:tint="#FFF"/>
+			android:layout_alignParentRight="true"
+			android:orientation="horizontal">
+
+			<ImageView
+				android:id="@+id/listEditButton"
+				android:layout_width="50dp"
+				android:layout_height="50dp"
+				android:padding="10dp"
+				android:src="@drawable/pencil"
+				android:tint="#FFF"/>
+
+			<ImageView
+				android:id="@+id/listSelectButton"
+				android:layout_width="50dp"
+				android:layout_height="50dp"
+				android:padding="10dp"
+				android:src="@drawable/format_list_bulleted"
+				android:tint="#FFF"/>
+
+		</LinearLayout>
+
+		<LinearLayout
+			android:id="@+id/editButtonsLayout"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_centerVertical="true"
+			android:layout_alignParentRight="true"
+			android:visibility="gone"
+			android:orientation="horizontal">
+
+			<ImageView
+				android:id="@+id/listAddButton"
+				android:layout_width="50dp"
+				android:layout_height="50dp"
+				android:padding="10dp"
+				android:src="@drawable/plus"
+				android:tint="#FFF"/>
+
+			<ImageView
+				android:id="@+id/listSaveButton"
+				android:layout_width="50dp"
+				android:layout_height="50dp"
+				android:padding="10dp"
+				android:src="@drawable/material_check"
+				android:tint="#FFF"/>
+
+		</LinearLayout>
 
 	</RelativeLayout>
 

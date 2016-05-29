@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ds.avare.R;
@@ -70,7 +71,8 @@ public class ChecklistAdapter extends BaseAdapter implements AdapterView.OnItemS
 
     @Override
     public Object getItem(int position) {
-        if(items == null || position < 0 || position >= items.size()) {
+        if(items == null || items.isEmpty() ||
+                position < 0 || position >= items.size()) {
             return null;
         }
 
@@ -78,9 +80,7 @@ public class ChecklistAdapter extends BaseAdapter implements AdapterView.OnItemS
     }
 
     @Override
-    public long getItemId(int position) {
-        return 0;
-    }
+    public long getItemId(int position) { return 0; }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -125,7 +125,7 @@ public class ChecklistAdapter extends BaseAdapter implements AdapterView.OnItemS
     }
 
     /**
-     *
+     * Toggles the check of a checklist item.
      * @param position The position of the item in the list.
      * @param view The view of the item.
      * @return The current checked state. (True == checked, False == unchecked)
@@ -146,7 +146,21 @@ public class ChecklistAdapter extends BaseAdapter implements AdapterView.OnItemS
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        // TODO: Implement
+        if(position == parent.getSelectedItemPosition()) {
+            // TODO: Clicked logic.
+        } else {
+            ListView listView = (ListView) parent;
+            listView.setSelection(position);
+            listView.smoothScrollToPosition(position);
+        }
+    }
+
+    /**
+     * Toggles the list in and out of edit mode.
+     * @param editing Whether or not this list is being edited.
+     */
+    public void listEdit(boolean editing) {
+        // TODO: Implement.
     }
 
     /**

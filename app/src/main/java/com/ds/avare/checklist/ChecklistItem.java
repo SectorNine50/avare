@@ -16,22 +16,26 @@ public class ChecklistItem {
     private final String JSON_NAME = "name";
     private final String JSON_LIST_ITEMS = "listItems";
 
-    public Integer id;
+    public Long id;
     public String name;
     public ArrayList<String> listItems;
 
-    public ChecklistItem(Integer id, String name) {
+    public ChecklistItem(Long id, String name) {
         this.id = id;
         this.name = name;
     }
 
     @SuppressWarnings("unchecked")
     public ChecklistItem(JSONObject obj) throws JSONException {
-        id = obj.getInt(JSON_ID);
+        id = obj.getLong(JSON_ID);
         name = obj.getString(JSON_NAME);
         listItems = (ArrayList<String>) obj.get(JSON_LIST_ITEMS);
     }
 
+    /**
+     * Generates a JSONObject from the contents of this instance.
+     * @return A JSONObject representation of this instance, or null if an error occurs.
+     */
     public JSONObject getJson() {
         JSONObject obj = new JSONObject();
 

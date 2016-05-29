@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.TypedValue;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -35,7 +34,6 @@ public class ChecklistItemLayout extends RelativeLayout {
 
     private TextView itemName;
     private ImageView itemCheck;
-    private FrameLayout vertLine;
 
     public ChecklistItemLayout(Context context) {
         super(context);
@@ -58,12 +56,17 @@ public class ChecklistItemLayout extends RelativeLayout {
         init();
     }
 
+    /**
+     * Initializes the layout variables, must be called before any other functions.
+     */
     private void init() {
         itemName = (TextView) findViewById(R.id.itemName);
         itemCheck = (ImageView) findViewById(R.id.itemCheck);
-        vertLine = (FrameLayout) findViewById(R.id.vertLine);
     }
 
+    /**
+     * Changes the visual state of this item to indicate that its been selected.
+     */
     public void itemSelected() {
         this.setBackgroundColor(SELECTED_BG_COLOR);
 
@@ -74,10 +77,11 @@ public class ChecklistItemLayout extends RelativeLayout {
         itemCheck.requestLayout();
         itemCheck.getLayoutParams().height = Math.round(Helper.getDpiToPix(getContext()) * SELECTED_IMG_SIZE);
         itemCheck.getLayoutParams().width = Math.round(Helper.getDpiToPix(getContext()) * SELECTED_IMG_SIZE);
-
-        vertLine.setBackgroundColor(SELECTED_COLOR);
     }
 
+    /**
+     * Changes the visual state of this item to indicate that its not selected.
+     */
     public void itemDeselected() {
         this.setBackgroundColor(NORMAL_BG_COLOR);
 
@@ -88,15 +92,27 @@ public class ChecklistItemLayout extends RelativeLayout {
         itemCheck.requestLayout();
         itemCheck.getLayoutParams().height = Math.round(Helper.getDpiToPix(getContext()) * NORMAL_IMG_SIZE);
         itemCheck.getLayoutParams().width = Math.round(Helper.getDpiToPix(getContext()) * NORMAL_IMG_SIZE);
-
-        vertLine.setBackgroundColor(NORMAL_COLOR);
     }
 
+    /**
+     * Changes the visual state of this item to indicate that its been checked.
+     */
     public void itemChecked() {
         itemCheck.setImageResource(R.drawable.checkbox_marked_circle_outline);
     }
 
+    /**
+     * Changes the visual state of this item to indicate that it is not checked.
+     */
     public void itemUnchecked() {
         itemCheck.setImageResource(R.drawable.checkbox_blank_circle_outline);
+    }
+
+    /**
+     * Toggles this item into an editable state.
+     * @param editing Whether or not this list is being edited.
+     */
+    public void itemEdit(boolean editing) {
+        // TODO: Implement.
     }
 }
