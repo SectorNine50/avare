@@ -100,7 +100,7 @@ public class ChecklistActivity extends AppCompatActivity {
         listAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Implement.
+                checklistAdapter.addItem(null);
             }
         });
 

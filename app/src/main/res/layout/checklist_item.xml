@@ -17,6 +17,22 @@
         android:textSize="20dp"
         android:text="Item"/>
 
+    <!-- Hidden until editing -->
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/itemNameEdit"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content" />
+
+    </android.support.design.widget.TextInputLayout>
+
     <ImageView
         android:id="@+id/itemCheck"
         android:layout_width="50dp"

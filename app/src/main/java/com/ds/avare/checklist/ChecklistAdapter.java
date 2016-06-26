@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -25,6 +26,9 @@ public class ChecklistAdapter extends BaseAdapter implements AdapterView.OnItemS
     // Used to visually shrink an item on deselection.
     private ChecklistItemLayout currentlySelectedView;
 
+    // Determines whether or not the list should be displayed as editable.
+    private boolean editing = false;
+
     public ChecklistAdapter(Context context) {
         this.context = context;
         items = new ArrayList<>();
@@ -38,11 +42,29 @@ public class ChecklistAdapter extends BaseAdapter implements AdapterView.OnItemS
     /**
      * Adds a checklist item to the existing list of items.
      * @param name Name of checklist item.
-     * @param checked Whether or not this item has been checked.
      */
-    public void addItem(String name, boolean checked) {
-        items.add(new LineItem(name, checked));
+    public void addItem(@Nullable String name) {
+        if(name == null || name.isEmpty()) {
+            name = "New Task";
+        }
+
+        items.add(new LineItem(name, false));
         notifyDataSetChanged();
+    }
+
+    public void deleteItem(int position) {
+        items.remove(position);
+        notifyDataSetChanged();
+    }
+
+    public ArrayList<String> getItems() {
+        ArrayList<String> checklistItems = new ArrayList<>();
+
+        for(LineItem item : items) {
+            checklistItems.add(item.name);
+        }
+
+        return checklistItems;
     }
 
     /**
@@ -92,11 +114,24 @@ public class ChecklistAdapter extends BaseAdapter implements AdapterView.OnItemS
         if(item == null) { return null; }
 
         TextView itemName = (TextView) convertView.findViewById(R.id.itemName);
-        itemName.setText(item.name);
-
+        EditText itemNameEdit = (EditText) convertView.findViewById(R.id.itemNameEdit);
         ImageView itemCheck = (ImageView) convertView.findViewById(R.id.itemCheck);
-        // Default image in the layout is unchecked.
-        if(item.checked) { itemCheck.setImageResource(R.drawable.checkbox_marked_circle_outline); }
+
+        if(!editing) {
+            itemNameEdit.setVisibility(View.GONE);
+            itemName.setText(item.name);
+            // Default image in the layout is unchecked.
+            if (item.checked) {
+                itemCheck.setImageResource(R.drawable.checkbox_marked_circle_outline);
+            }
+        } else {
+            itemNameEdit.setVisibility(View.VISIBLE);
+            itemNameEdit.setText(item.name);
+
+            itemName.setVisibility(View.GONE);
+
+            itemCheck.setImageResource(R.drawable.delete_forever);
+        }
 
         return convertView;
     }
@@ -160,7 +195,8 @@ public class ChecklistAdapter extends BaseAdapter implements AdapterView.OnItemS
      * @param editing Whether or not this list is being edited.
      */
     public void listEdit(boolean editing) {
-        // TODO: Implement.
+        this.editing = editing;
+        notifyDataSetInvalidated();
     }
 
     /**
